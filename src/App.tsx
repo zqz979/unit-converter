@@ -73,9 +73,20 @@ function convertUnit(
   to: string,
   unitType: "length" | "weight"
 ) {
-  const fromFactor = conversionFactors[unitType][from];
-  const toFactor = conversionFactors[unitType][to];
-  return (value * fromFactor) / toFactor;
+  if (unitType === "length") {
+    const fromFactor =
+      conversionFactors.length[from as keyof typeof conversionFactors.length];
+    const toFactor =
+      conversionFactors.length[to as keyof typeof conversionFactors.length];
+    return (value * fromFactor) / toFactor;
+  } else if (unitType === "weight") {
+    const fromFactor =
+      conversionFactors.weight[from as keyof typeof conversionFactors.weight];
+    const toFactor =
+      conversionFactors.weight[to as keyof typeof conversionFactors.weight];
+    return (value * fromFactor) / toFactor;
+  }
+  return 0;
 }
 
 export default function App() {
