@@ -343,7 +343,7 @@ export default function Component() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Unit Converter. All rights reserved.
+            © {new Date().getFullYear()} Qunzhe Zhu. All rights reserved.
           </p>
         </CardFooter>
       </Card>
