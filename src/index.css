@@ -149,3 +149,9 @@ input[type="number"] {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .tab-name {
+    @apply text-xxs sm:text-base;
+  }
+}

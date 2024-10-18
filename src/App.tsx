@@ -15,54 +15,138 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const lengthUnits = [
-  "millimeter",
-  "centimeter",
-  "meter",
-  "kilometer",
-  "inch",
-  "foot",
-  "yard",
-  "mile",
+  "Kilometer",
+  "Meter",
+  "Centimeter",
+  "Millimeter",
+  "Micrometer",
+  "Nanometer",
+  "Mile",
+  "Yard",
+  "Foot",
+  "Inch",
+  "Nautical mile",
 ];
-const weightUnits = ["milligram", "gram", "kilogram", "ounce", "pound"];
-const temperatureUnits = ["Celsius", "Fahrenheit", "Kelvin"];
+const massUnits = [
+  "Metric ton",
+  "Kilogram",
+  "Gram",
+  "Milligram",
+  "Microgram",
+  "Imperial ton",
+  "US ton",
+  "Stone",
+  "Pound",
+  "Ounce",
+];
+const temperatureUnits = ["Fahrenheit", "Celsius", "Kelvin"];
+const volumeUnits = [
+  "US liquid gallon",
+  "US liquid quart",
+  "US liquid pint",
+  "US legal cup",
+  "US fluid ounce",
+  "US tablespoon",
+  "US teaspoon",
+  "Cubic meter",
+  "Liter",
+  "Milliliter",
+  "Imperial gallon",
+  "Imperial quart",
+  "Imperial pint",
+  "Imperial cup",
+  "Imperial fluid ounce",
+  "Imperial tablespoon",
+  "Imperial teaspoon",
+  "Cubic foot",
+  "Cubic inch",
+];
+const areaUnits = [
+  "Square kilometer",
+  "Square meter",
+  "Square mile",
+  "Square yard",
+  "Square foot",
+  "Square inch",
+  "Hectare",
+  "Acre",
+];
 
 const conversionFactors = {
   length: {
-    millimeter: 1,
-    centimeter: 10,
-    meter: 1000,
-    kilometer: 1000000,
-    inch: 25.4,
-    foot: 304.8,
-    yard: 914.4,
-    mile: 1609344,
+    Kilometer: 1000,
+    Meter: 1,
+    Centimeter: 0.01,
+    Millimeter: 0.001,
+    Micrometer: 0.000001,
+    Nanometer: 0.000000001,
+    Mile: 1609.344,
+    Yard: 0.9144,
+    Foot: 0.3048,
+    Inch: 0.0254,
+    "Nautical mile": 1852,
   },
-  weight: {
-    milligram: 1,
-    gram: 1000,
-    kilogram: 1000000,
-    ounce: 28349.5,
-    pound: 453592,
+  mass: {
+    "Metric ton": 1000000,
+    Kilogram: 1000,
+    Gram: 1,
+    Milligram: 0.001,
+    Microgram: 0.000001,
+    "Imperial ton": 1016046.9088,
+    "US ton": 907184.74,
+    Stone: 6350.29318,
+    Pound: 453.59237,
+    Ounce: 28.34952,
+  },
+  volume: {
+    "US liquid gallon": 3.78541,
+    "US liquid quart": 0.946353,
+    "US liquid pint": 0.473176,
+    "US legal cup": 0.24,
+    "US fluid ounce": 0.0295735,
+    "US tablespoon": 0.0147868,
+    "US teaspoon": 0.00492892,
+    "Cubic meter": 1000,
+    Liter: 1,
+    Milliliter: 0.001,
+    "Imperial gallon": 4.54609,
+    "Imperial quart": 1.13652,
+    "Imperial pint": 0.568261,
+    "Imperial cup": 0.284131,
+    "Imperial fluid ounce": 0.0284131,
+    "Imperial tablespoon": 0.0177582,
+    "Imperial teaspoon": 0.00591939,
+    "Cubic foot": 28.3168,
+    "Cubic inch": 0.0163871,
+  },
+  area: {
+    "Square kilometer": 1000000,
+    "Square meter": 1,
+    "Square mile": 2589988.11,
+    "Square yard": 0.836127,
+    "Square foot": 0.092903,
+    "Square inch": 0.00064516,
+    Hectare: 10000,
+    Acre: 4046.86,
   },
 };
 
 function convertTemperature(value: number, from: string, to: string) {
   if (from === to) return value;
-  if (from === "Celsius") {
-    if (to === "Fahrenheit") return (value * 9) / 5 + 32;
-    if (to === "Kelvin") return value + 273.15;
-  }
   if (from === "Fahrenheit") {
     if (to === "Celsius") return ((value - 32) * 5) / 9;
     if (to === "Kelvin") return ((value - 32) * 5) / 9 + 273.15;
   }
+  if (from === "Celsius") {
+    if (to === "Fahrenheit") return (value * 9) / 5 + 32;
+    if (to === "Kelvin") return value + 273.15;
+  }
   if (from === "Kelvin") {
-    if (to === "Celsius") return value - 273.15;
     if (to === "Fahrenheit") return ((value - 273.15) * 9) / 5 + 32;
+    if (to === "Celsius") return value - 273.15;
   }
   return value;
 }
@@ -71,25 +155,15 @@ function convertUnit(
   value: number,
   from: string,
   to: string,
-  unitType: "length" | "weight"
+  unitType: "length" | "mass" | "volume" | "area"
 ) {
-  if (unitType === "length") {
-    const fromFactor =
-      conversionFactors.length[from as keyof typeof conversionFactors.length];
-    const toFactor =
-      conversionFactors.length[to as keyof typeof conversionFactors.length];
-    return (value * fromFactor) / toFactor;
-  } else if (unitType === "weight") {
-    const fromFactor =
-      conversionFactors.weight[from as keyof typeof conversionFactors.weight];
-    const toFactor =
-      conversionFactors.weight[to as keyof typeof conversionFactors.weight];
-    return (value * fromFactor) / toFactor;
-  }
-  return 0;
+  const factors = conversionFactors[unitType];
+  const fromFactor = factors[from as keyof typeof factors];
+  const toFactor = factors[to as keyof typeof factors];
+  return (value * fromFactor) / toFactor;
 }
 
-export default function App() {
+export default function Component() {
   const [tab, setTab] = useState("length");
   const [value, setValue] = useState("");
   const [fromUnit, setFromUnit] = useState("");
@@ -98,32 +172,36 @@ export default function App() {
 
   const handleConvert = () => {
     if (!value || !fromUnit || !toUnit) {
-      alert("Please fill all fields");
+      alert("Please fill all fields.");
       return;
     }
 
     const numValue = parseFloat(value);
-    if (tab === "length" || tab === "weight" ? numValue <= 0 : false) {
+    if (["length", "mass", "volume", "area"].includes(tab) && numValue < 0) {
       alert(`Value for ${tab} must be non-negative.`);
       return;
     }
     if (tab === "temperature") {
       switch (fromUnit) {
-        case "Celsius":
-          if (numValue < -273.15) {
-            alert("Temperature cannot be less than -273.15 °C.");
+        case "Fahrenheit":
+          if (numValue < -459.67) {
+            alert(
+              "Temperature cannot be less than -459.67 °F (absolute zero)."
+            );
             return;
           }
           break;
-        case "Fahrenheit":
-          if (numValue < -459.67) {
-            alert("Temperature cannot be less than -459.67 °F.");
+        case "Celsius":
+          if (numValue < -273.15) {
+            alert(
+              "Temperature cannot be less than -273.15 °C (absolute zero)."
+            );
             return;
           }
           break;
         case "Kelvin":
           if (numValue < 0) {
-            alert("Temperature cannot be less than 0 K.");
+            alert("Temperature cannot be less than 0 K (absolute zero).");
             return;
           }
           break;
@@ -143,17 +221,17 @@ export default function App() {
         numValue,
         fromUnit,
         toUnit,
-        tab as "length" | "weight"
+        tab as "length" | "mass" | "volume" | "area"
       );
     }
 
     setResult(
-      `${numValue} ${fromUnit} = ${convertedValue.toFixed(4)} ${toUnit}`
+      `${numValue} ${fromUnit} = ${convertedValue.toFixed(6)} ${toUnit}`
     );
   };
 
-  const handleTabChange = (tab: string) => {
-    setTab(tab);
+  const handleTabChange = (newTab: string) => {
+    setTab(newTab);
     setFromUnit("");
     setToUnit("");
     setValue("");
@@ -163,8 +241,12 @@ export default function App() {
   const unitOptions =
     tab === "length"
       ? lengthUnits
-      : tab === "weight"
-      ? weightUnits
+      : tab === "mass"
+      ? massUnits
+      : tab === "volume"
+      ? volumeUnits
+      : tab === "area"
+      ? areaUnits
       : temperatureUnits;
 
   return (
@@ -175,29 +257,25 @@ export default function App() {
             Unit Converter
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0 sm:p-6">
           <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="length">Length</TabsTrigger>
-              <TabsTrigger value="weight">Weight</TabsTrigger>
-              <TabsTrigger value="temperature">Temperature</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-5 gap-0.5">
+              <TabsTrigger value="length" className="tab-name">
+                Length
+              </TabsTrigger>
+              <TabsTrigger value="mass" className="tab-name">
+                Mass
+              </TabsTrigger>
+              <TabsTrigger value="temperature" className="tab-name">
+                Temperature
+              </TabsTrigger>
+              <TabsTrigger value="volume" className="tab-name">
+                Volume
+              </TabsTrigger>
+              <TabsTrigger value="area" className="tab-name">
+                Area
+              </TabsTrigger>
             </TabsList>
-            <TabsContent value="length">
-              <p className="text-sm text-muted-foreground mb-4">
-                Convert between millimeter, centimeter, meter, kilometer, inch,
-                foot, yard, and mile.
-              </p>
-            </TabsContent>
-            <TabsContent value="weight">
-              <p className="text-sm text-muted-foreground mb-4">
-                Convert between milligram, gram, kilogram, ounce, and pound.
-              </p>
-            </TabsContent>
-            <TabsContent value="temperature">
-              <p className="text-sm text-muted-foreground mb-4">
-                Convert between Celsius, Fahrenheit, and Kelvin.
-              </p>
-            </TabsContent>
           </Tabs>
 
           <div className="grid gap-4 py-4">
@@ -208,7 +286,7 @@ export default function App() {
               <Input
                 id="value"
                 type="number"
-                min={0}
+                min={tab !== "temperature" ? 0 : undefined}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 className="col-span-3"
@@ -265,7 +343,7 @@ export default function App() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Qunzhe Zhu. All rights reserved.
+            © {new Date().getFullYear()} Unit Converter. All rights reserved.
           </p>
         </CardFooter>
       </Card>
