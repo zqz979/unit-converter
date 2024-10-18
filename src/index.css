@@ -148,6 +148,6 @@ input[type="number"] {
 
 @layer utilities {
   .tab-name {
-    @apply text-xxs sm:text-base text-primary-foreground;
+    @apply text-xxs sm:text-base;
   }
 }
