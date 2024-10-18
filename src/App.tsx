@@ -16,63 +16,55 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowUpDown } from "lucide-react";
 
 const lengthUnits = [
-  "Kilometer",
-  "Meter",
-  "Centimeter",
-  "Millimeter",
-  "Micrometer",
-  "Nanometer",
-  "Mile",
-  "Yard",
-  "Foot",
-  "Inch",
-  "Nautical mile",
+  { name: "Kilometer", symbol: "km" },
+  { name: "Meter", symbol: "m" },
+  { name: "Centimeter", symbol: "cm" },
+  { name: "Millimeter", symbol: "mm" },
+  { name: "Micrometer", symbol: "μm" },
+  { name: "Nanometer", symbol: "nm" },
+  { name: "Mile", symbol: "mi" },
+  { name: "Yard", symbol: "yd" },
+  { name: "Foot", symbol: "ft" },
+  { name: "Inch", symbol: "in" },
+  { name: "Nautical mile", symbol: "nmi" },
 ];
-const massUnits = [
-  "Metric ton",
-  "Kilogram",
-  "Gram",
-  "Milligram",
-  "Microgram",
-  "Imperial ton",
-  "US ton",
-  "Stone",
-  "Pound",
-  "Ounce",
+const weightUnits = [
+  { name: "Ton", symbol: "t" },
+  { name: "Kilogram", symbol: "kg" },
+  { name: "Gram", symbol: "g" },
+  { name: "Milligram", symbol: "mg" },
+  { name: "Microgram", symbol: "μg" },
+  { name: "Pound", symbol: "lb" },
+  { name: "Ounce", symbol: "oz" },
 ];
-const temperatureUnits = ["Fahrenheit", "Celsius", "Kelvin"];
+const temperatureUnits = [
+  { name: "Fahrenheit", symbol: "°F" },
+  { name: "Celsius", symbol: "°C" },
+  { name: "Kelvin", symbol: "K" },
+];
 const volumeUnits = [
-  "US liquid gallon",
-  "US liquid quart",
-  "US liquid pint",
-  "US legal cup",
-  "US fluid ounce",
-  "US tablespoon",
-  "US teaspoon",
-  "Cubic meter",
-  "Liter",
-  "Milliliter",
-  "Imperial gallon",
-  "Imperial quart",
-  "Imperial pint",
-  "Imperial cup",
-  "Imperial fluid ounce",
-  "Imperial tablespoon",
-  "Imperial teaspoon",
-  "Cubic foot",
-  "Cubic inch",
+  { name: "Gallon", symbol: "gal" },
+  { name: "Quart", symbol: "qt" },
+  { name: "Pint", symbol: "pt" },
+  { name: "Cup", symbol: "cup" },
+  { name: "Fluid ounce", symbol: "fl oz" },
+  { name: "Tablespoon", symbol: "tbsp" },
+  { name: "Teaspoon", symbol: "tsp" },
+  { name: "Liter", symbol: "L" },
+  { name: "Milliliter", symbol: "mL" },
 ];
 const areaUnits = [
-  "Square kilometer",
-  "Square meter",
-  "Square mile",
-  "Square yard",
-  "Square foot",
-  "Square inch",
-  "Hectare",
-  "Acre",
+  { name: "Square kilometer", symbol: "km²" },
+  { name: "Square meter", symbol: "m²" },
+  { name: "Square mile", symbol: "mi²" },
+  { name: "Square yard", symbol: "yd²" },
+  { name: "Square foot", symbol: "ft²" },
+  { name: "Square inch", symbol: "in²" },
+  { name: "Hectare", symbol: "ha" },
+  { name: "Acre", symbol: "ac" },
 ];
 
 const conversionFactors = {
@@ -89,38 +81,25 @@ const conversionFactors = {
     Inch: 0.0254,
     "Nautical mile": 1852,
   },
-  mass: {
-    "Metric ton": 1000000,
+  weight: {
+    Ton: 1000000,
     Kilogram: 1000,
     Gram: 1,
     Milligram: 0.001,
     Microgram: 0.000001,
-    "Imperial ton": 1016046.9088,
-    "US ton": 907184.74,
-    Stone: 6350.29318,
     Pound: 453.59237,
-    Ounce: 28.34952,
+    Ounce: 453.59237 / 16.0,
   },
   volume: {
-    "US liquid gallon": 3.78541,
-    "US liquid quart": 0.946353,
-    "US liquid pint": 0.473176,
-    "US legal cup": 0.24,
-    "US fluid ounce": 0.0295735,
-    "US tablespoon": 0.0147868,
-    "US teaspoon": 0.00492892,
-    "Cubic meter": 1000,
+    Gallon: 3.785411784,
+    Quart: 3.785411784 / 4.0,
+    Pint: 3.785411784 / 8.0,
+    Cup: 3.785411784 / 16.0,
+    "Fluid ounce": 3.785411784 / 128.0,
+    Tablespoon: 3.785411784 / 256.0,
+    Teaspoon: 3.785411784 / 768.0,
     Liter: 1,
     Milliliter: 0.001,
-    "Imperial gallon": 4.54609,
-    "Imperial quart": 1.13652,
-    "Imperial pint": 0.568261,
-    "Imperial cup": 0.284131,
-    "Imperial fluid ounce": 0.0284131,
-    "Imperial tablespoon": 0.0177582,
-    "Imperial teaspoon": 0.00591939,
-    "Cubic foot": 28.3168,
-    "Cubic inch": 0.0163871,
   },
   area: {
     "Square kilometer": 1000000,
@@ -130,7 +109,7 @@ const conversionFactors = {
     "Square foot": 0.092903,
     "Square inch": 0.00064516,
     Hectare: 10000,
-    Acre: 4046.86,
+    Acre: 4046.8564224,
   },
 };
 
@@ -155,7 +134,7 @@ function convertUnit(
   value: number,
   from: string,
   to: string,
-  unitType: "length" | "mass" | "volume" | "area"
+  unitType: "length" | "weight" | "volume" | "area"
 ) {
   const factors = conversionFactors[unitType];
   const fromFactor = factors[from as keyof typeof factors];
@@ -177,7 +156,7 @@ export default function Component() {
     }
 
     const numValue = parseFloat(value);
-    if (["length", "mass", "volume", "area"].includes(tab) && numValue < 0) {
+    if (["length", "weight", "volume", "area"].includes(tab) && numValue < 0) {
       alert(`Value for ${tab} must be non-negative.`);
       return;
     }
@@ -221,7 +200,7 @@ export default function Component() {
         numValue,
         fromUnit,
         toUnit,
-        tab as "length" | "mass" | "volume" | "area"
+        tab as "length" | "weight" | "volume" | "area"
       );
     }
 
@@ -238,11 +217,17 @@ export default function Component() {
     setResult("");
   };
 
+  const handleSwap = () => {
+    setFromUnit(toUnit);
+    setToUnit(fromUnit);
+    setResult("");
+  };
+
   const unitOptions =
     tab === "length"
       ? lengthUnits
-      : tab === "mass"
-      ? massUnits
+      : tab === "weight"
+      ? weightUnits
       : tab === "volume"
       ? volumeUnits
       : tab === "area"
@@ -263,8 +248,8 @@ export default function Component() {
               <TabsTrigger value="length" className="tab-name">
                 Length
               </TabsTrigger>
-              <TabsTrigger value="mass" className="tab-name">
-                Mass
+              <TabsTrigger value="weight" className="tab-name">
+                Weight
               </TabsTrigger>
               <TabsTrigger value="temperature" className="tab-name">
                 Temperature
@@ -302,8 +287,8 @@ export default function Component() {
                 </SelectTrigger>
                 <SelectContent>
                   {unitOptions.map((unit) => (
-                    <SelectItem key={unit} value={unit}>
-                      {unit}
+                    <SelectItem key={unit.name} value={unit.name}>
+                      {unit.name}({unit.symbol})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -313,18 +298,29 @@ export default function Component() {
               <Label htmlFor="to" className="text-right">
                 To
               </Label>
-              <Select value={toUnit} onValueChange={setToUnit}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select unit" />
-                </SelectTrigger>
-                <SelectContent>
-                  {unitOptions.map((unit) => (
-                    <SelectItem key={unit} value={unit}>
-                      {unit}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="col-span-3 flex items-center gap-2">
+                <Select value={toUnit} onValueChange={setToUnit}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select unit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {unitOptions
+                      .filter((unit) => unit.name !== fromUnit)
+                      .map((unit) => (
+                        <SelectItem key={unit.name} value={unit.name}>
+                          {unit.name}({unit.symbol})
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <button
+                  onClick={handleSwap}
+                  className="p-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80"
+                  aria-label="Swap units"
+                >
+                  <ArrowUpDown size={20} />
+                </button>
+              </div>
             </div>
             <button
               onClick={handleConvert}
