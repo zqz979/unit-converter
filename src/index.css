@@ -59,7 +59,7 @@ button:hover {
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 0px auto -webkit-focus-ring-color;
 }
 
 input::-webkit-outer-spin-button,
@@ -152,6 +152,6 @@ input[type="number"] {
 
 @layer utilities {
   .tab-name {
-    @apply text-xxs sm:text-base ring-inset;
+    @apply text-xxs sm:text-base;
   }
 }
