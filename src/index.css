@@ -152,6 +152,6 @@ input[type="number"] {
 
 @layer utilities {
   .tab-name {
-    @apply text-xxs sm:text-base;
+    @apply text-xxs sm:text-base ring-inset;
   }
 }
