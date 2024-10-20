@@ -69,47 +69,47 @@ const areaUnits = [
 
 const conversionFactors = {
   length: {
-    Kilometer: 1000,
-    Meter: 1,
-    Centimeter: 0.01,
-    Millimeter: 0.001,
-    Micrometer: 0.000001,
-    Nanometer: 0.000000001,
-    Mile: 1609.344,
-    Yard: 0.9144,
-    Foot: 0.3048,
-    Inch: 0.0254,
-    "Nautical mile": 1852,
+    km: 1000,
+    m: 1,
+    cm: 0.01,
+    mm: 0.001,
+    μm: 0.000001,
+    nm: 0.000000001,
+    mi: 1609.344,
+    yd: 0.9144,
+    ft: 0.3048,
+    in: 0.0254,
+    nmi: 1852,
   },
   weight: {
-    Ton: 1000000,
-    Kilogram: 1000,
-    Gram: 1,
-    Milligram: 0.001,
-    Microgram: 0.000001,
-    Pound: 453.59237,
-    Ounce: 453.59237 / 16.0,
+    t: 1000000,
+    kg: 1000,
+    g: 1,
+    mg: 0.001,
+    μg: 0.000001,
+    lb: 453.59237,
+    oz: 453.59237 / 16.0,
   },
   volume: {
-    Gallon: 3.785411784,
-    Quart: 3.785411784 / 4.0,
-    Pint: 3.785411784 / 8.0,
-    Cup: 3.785411784 / 16.0,
-    "Fluid ounce": 3.785411784 / 128.0,
-    Tablespoon: 3.785411784 / 256.0,
-    Teaspoon: 3.785411784 / 768.0,
-    Liter: 1,
-    Milliliter: 0.001,
+    gal: 3.785411784,
+    qt: 3.785411784 / 4.0,
+    pt: 3.785411784 / 8.0,
+    cup: 3.785411784 / 16.0,
+    fl_oz: 3.785411784 / 128.0,
+    tbsp: 3.785411784 / 256.0,
+    tsp: 3.785411784 / 768.0,
+    L: 1,
+    mL: 0.001,
   },
   area: {
-    "Square kilometer": 1000000,
-    "Square meter": 1,
-    "Square mile": 2589988.11,
-    "Square yard": 0.836127,
-    "Square foot": 0.092903,
-    "Square inch": 0.00064516,
-    Hectare: 10000,
-    Acre: 4046.8564224,
+    "km²": 1000000,
+    "m²": 1,
+    "mi²": 2589988.110336,
+    "yd²": 0.836127,
+    "ft²": 0.092903,
+    "in²": 0.00064516,
+    ha: 10000,
+    ac: 4046.8564224,
   },
 };
 
@@ -141,6 +141,12 @@ function convertUnit(
   const toFactor = factors[to as keyof typeof factors];
   return (value * fromFactor) / toFactor;
 }
+
+const formatNumber = (num: number) => {
+  return parseFloat(num.toFixed(10)).toLocaleString(undefined, {
+    maximumFractionDigits: 10,
+  });
+};
 
 export default function Component() {
   const [tab, setTab] = useState("length");
@@ -205,7 +211,9 @@ export default function Component() {
     }
 
     setResult(
-      `${numValue} ${fromUnit} = ${convertedValue.toFixed(6)} ${toUnit}`
+      `${formatNumber(numValue)} ${fromUnit} = ${formatNumber(
+        convertedValue
+      )} ${toUnit}`
     );
   };
 
@@ -287,7 +295,7 @@ export default function Component() {
                 </SelectTrigger>
                 <SelectContent>
                   {unitOptions.map((unit) => (
-                    <SelectItem key={unit.name} value={unit.name}>
+                    <SelectItem key={unit.name} value={unit.symbol}>
                       {unit.name}({unit.symbol})
                     </SelectItem>
                   ))}
@@ -307,7 +315,7 @@ export default function Component() {
                     {unitOptions
                       .filter((unit) => unit.name !== fromUnit)
                       .map((unit) => (
-                        <SelectItem key={unit.name} value={unit.name}>
+                        <SelectItem key={unit.name} value={unit.symbol}>
                           {unit.name}({unit.symbol})
                         </SelectItem>
                       ))}
