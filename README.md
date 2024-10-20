@@ -1,6 +1,6 @@
 # Unit Converter
 
-A simple and efficient unit conversion tool built with React and TypeScript.
+A simple and efficient unit conversion tool built with React and TypeScript. Followed the instruction on https://roadmap.sh/projects/unit-converter but with some tweaks.
 
 ## Features
 
